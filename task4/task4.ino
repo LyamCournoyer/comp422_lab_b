@@ -2,50 +2,46 @@
 
 #define OutputLedDirection DDRD
 #define OutputLedRegister PORTD
-#define OutputLedBit (1 << 5)
+#define OutputLedBit (1 << 5);
 
-const int maxOnMillis = 10;
-const int onMillisChangeRate = 3;
-const int delayBeforeBrightnessChange = 2000; 
+const int MAX_ON_MILLIS = 10;
+const int MIN_OFF_MILLIS = 10;
 
-int minOffMillis = 10;
-int currentOnMillis = maxOnMillis;
+const int ON_MILLIS_CHANGE_RATE = 3;
+const int BRIGHTNESS_CHANGE_DELAY = 2000; 
 
- unsigned long previousMillis = 0; 
+
+int currentOnMillis = MAX_ON_MILLIS;
+unsigned long previousMillis = 0; 
 
 void setup() {
-  Serial.begin (9600);
-   OutputLedDirection |= OutputLedBit;
-  turnOnRegisterBit(OutputLedDirection, OutputLedBit);
-  turnOnRegisterBit(OutputLedRegister, OutputLedBit);
-
+   Serial.begin (9600);
+   OutputLedDirection |= OutputLedBit;  
 }
 
 void loop() {
   unsigned long currentMillis = millis();
-  if (currentMillis - previousMillis >= delayBeforeBrightnessChange) {    
+  if (currentMillis - previousMillis >= BRIGHTNESS_CHANGE_DELAY) {    
     previousMillis = currentMillis;
-    currentOnMillis = (currentOnMillis + onMillisChangeRate)% maxOnMillis;
+    currentOnMillis = getNewBrightness(currentOnMillis);
     Serial.print("Current brightness ");
     Serial.println(currentOnMillis);
     
   }
-  turnOnRegisterBit(OutputLedRegister, OutputLedBit);
+  turnOnRegisterBit();
   delay(currentOnMillis);
-  turnOffRegisterBit(OutputLedRegister, OutputLedBit);
-  delay(minOffMillis);
+  turnOffRegisterBit();
+  delay(MIN_OFF_MILLIS);
 }
 
-void turnOnRegisterBit(int ledRegister, int bitPos){
+void turnOnRegisterBit(){
   OutputLedRegister |= OutputLedBit;
-//  ledRegister |= (1 << bitPos);
 }
 
-void turnOffRegisterBit(int ledRegister, int bitPos){
+void turnOffRegisterBit(){
    OutputLedRegister &= ~OutputLedBit;
-//  ledRegister &= ~(1 << bitPos);
 }
 
-int getNewBrightness(){
-  
+int getNewBrightness(int currentOnMillis){
+  return (currentOnMillis + ON_MILLIS_CHANGE_RATE)% MAX_ON_MILLIS;
 }
