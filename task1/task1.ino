@@ -3,7 +3,7 @@ byte OUTPUT_PIN = 13;
 void setup() { 
   // put your setup code here, to run once:
   pinMode(OUTPUT_PIN, OUTPUT);  
-  pinMode(INPUT_PIN, INPUT);
+  pinMode(INPUT_PIN, INPUT_PULLUP);
 }
 
 void loop() {
