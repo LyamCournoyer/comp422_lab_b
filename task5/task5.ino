@@ -7,6 +7,8 @@
 #define InputPinRegister PIND
 #define InputLedBit (1 << 2)
 
+#define TimerCompareVal 39062; //2.5 sec
+
 void setup(){
   cli();
   Serial.begin (9600);
@@ -24,16 +26,16 @@ void myDelay(void){
   TCCR1A = 0;
   TCCR1B = 0;
   TCNT1  = 0;
-  OCR1A = 39062;            // compare match register 16MHz/256/2Hz
-  TCCR1B |= (1 << WGM12);   // CTC mode
-  TIMSK1 |= (1 << OCIE1A);  // enable timer compare interrupt
-  TCCR1B |= (1 << CS12) + (1 << CS10);    // 256 prescaler 
+  OCR1A = TimerCompareVal;
+  TCCR1B |= (1 << WGM12);
+  TIMSK1 |= (1 << OCIE1A);
+  TCCR1B |= (1 << CS12) + (1 << CS10);
 }
 
 ISR(TIMER1_COMPA_vect) {
   cli();
   Serial.println("timer interupt");
-  digitalWrite(ledPin, LOW);   // toggle LED pin
+  digitalWrite(ledPin, LOW);
   TCCR1A = 0;
   TCCR1B = 0;
   sei();
@@ -56,7 +58,5 @@ ISR(INT0_vect){
 void loop()
 
 {
-
   while(1){};
-
 }
