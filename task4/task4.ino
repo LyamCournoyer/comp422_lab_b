@@ -8,7 +8,7 @@ const int MAX_ON_MILLIS = 10;
 const int MIN_OFF_MILLIS = 10;
 
 const int ON_MILLIS_CHANGE_RATE = 3;
-const int BRIGHTNESS_CHANGE_DELAY = 2000; 
+const int BRIGHTNESS_CHANGE_DELAY = 5000; 
 
 
 int currentOnMillis = MAX_ON_MILLIS;

@@ -49,9 +49,7 @@ ISR(TIMER1_COMPA_vect) {
 
 ISR(INT0_vect){  
   cli();
-  Serial.println("INT0 interupt");
-  Serial.println(digitalRead(2)); 
-  Serial.println(!(InputPinRegister & InputLedBit)); 
+  Serial.println("INT0 interupt");    
   if (!(InputPinRegister & InputLedBit)){   
     OutputLedRegister |= OutputLedBit;
     myDelay();
