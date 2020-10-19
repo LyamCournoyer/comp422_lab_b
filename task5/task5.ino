@@ -1,4 +1,4 @@
-#define ledPin 13
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
@@ -7,12 +7,17 @@
 #define InputPinRegister PIND
 #define InputLedBit (1 << 2)
 
+#define OutputLedDirection DDRB
+#define OutputLedRegister PORTB
+#define OutputLedBit (1 << 5)
+
 #define TimerCompareVal 39062; //2.5 sec
 
 void setup(){
   cli();
   Serial.begin (9600);
-  pinMode(ledPin, OUTPUT);
+  OutputLedDirection |= OutputLedBit;
+  
   InputLedDirection &= ~InputLedBit;
   InputLedRegister |= InputLedBit;
   EICRA |= (1 << ISC01);
@@ -35,7 +40,7 @@ void myDelay(void){
 ISR(TIMER1_COMPA_vect) {
   cli();
   Serial.println("timer interupt");
-  digitalWrite(ledPin, LOW);
+  OutputLedRegister &= ~OutputLedBit;
   TCCR1A = 0;
   TCCR1B = 0;
   sei();
@@ -45,10 +50,10 @@ ISR(TIMER1_COMPA_vect) {
 ISR(INT0_vect){  
   cli();
   Serial.println("INT0 interupt");
-  Serial.println(digitalRead(2));
-  if (digitalRead(2) == LOW){
-    
-    digitalWrite(ledPin, HIGH);
+  Serial.println(digitalRead(2)); 
+  Serial.println(!(InputPinRegister & InputLedBit)); 
+  if (!(InputPinRegister & InputLedBit)){   
+    OutputLedRegister |= OutputLedBit;
     myDelay();
   }
   sei();
